@@ -1,0 +1,35 @@
+name: Update README from Journal Entries
+
+on:
+  push:
+    paths:
+      - 'day-*.md'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Make script executable
+        run: chmod +x update-readme.sh
+
+      - name: Run update-readme.sh
+        run: ./update-readme.sh
+
+      - name: Commit and push updated README
+        run: |
+          git add README.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "🤖 Auto-update README after journal entry"
+            git push
+          fi
